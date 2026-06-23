@@ -1,35 +1,34 @@
-const initSqlJs = require('sql.js');
-const fs = require('fs');
-const path = require('path');
+const { Pool } = require('pg');
 const bcrypt = require('bcryptjs');
 
-const DB_PATH = path.join(__dirname, 'data.db');
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL || 'postgresql://postgres:postgres@localhost:5432/classificados',
+});
 
-let db;
+pool.on('error', err => console.error('Erro no pool PG:', err));
+
+function query(sql, params = []) {
+  return pool.query(sql, params).then(r => r.rows);
+}
+
+function get(sql, params = []) {
+  return pool.query(sql, params).then(r => r.rows[0] || null);
+}
+
+function run(sql, params = []) {
+  return pool.query(sql, params).then(r => ({ changes: r.rowCount }));
+}
 
 async function initDB() {
-  const SQL = await initSqlJs();
-
-  if (fs.existsSync(DB_PATH)) {
-    const buffer = fs.readFileSync(DB_PATH);
-    db = new SQL.Database(buffer);
-  } else {
-    db = new SQL.Database();
-  }
-
-  db.run('PRAGMA foreign_keys = ON');
-
-  db.run(`
+  const sql = `
     CREATE TABLE IF NOT EXISTS admin (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      id SERIAL PRIMARY KEY,
       username TEXT NOT NULL UNIQUE,
       password TEXT NOT NULL
-    )
-  `);
+    );
 
-  db.run(`
     CREATE TABLE IF NOT EXISTS veiculos (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      id SERIAL PRIMARY KEY,
       marca TEXT NOT NULL,
       modelo TEXT NOT NULL,
       ano_fabricacao INTEGER NOT NULL,
@@ -39,49 +38,46 @@ async function initDB() {
       cambio TEXT NOT NULL DEFAULT 'Manual',
       cor TEXT NOT NULL DEFAULT 'Branco',
       portas INTEGER NOT NULL DEFAULT 4,
-      preco REAL NOT NULL,
+      preco NUMERIC(12,2) NOT NULL,
       descricao TEXT,
-      destaque INTEGER NOT NULL DEFAULT 0,
-      vendido INTEGER NOT NULL DEFAULT 0,
+      destaque BOOLEAN NOT NULL DEFAULT FALSE,
+      vendido BOOLEAN NOT NULL DEFAULT FALSE,
       imagem TEXT,
-      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-      updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
-    )
-  `);
+      created_at TIMESTAMP DEFAULT NOW(),
+      updated_at TIMESTAMP DEFAULT NOW()
+    );
 
-  db.run(`
     CREATE TABLE IF NOT EXISTS vendedores (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      id SERIAL PRIMARY KEY,
       nome TEXT NOT NULL,
       telefone TEXT,
       email TEXT,
-      comissao_percentual REAL NOT NULL DEFAULT 5.0,
-      ativo INTEGER NOT NULL DEFAULT 1,
-      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-    )
-  `);
+      comissao_percentual NUMERIC(5,2) NOT NULL DEFAULT 5.0,
+      ativo BOOLEAN NOT NULL DEFAULT TRUE,
+      created_at TIMESTAMP DEFAULT NOW()
+    );
 
-  db.run(`
     CREATE TABLE IF NOT EXISTS vendas (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      veiculo_id INTEGER NOT NULL,
-      vendedor_id INTEGER,
+      id SERIAL PRIMARY KEY,
+      veiculo_id INTEGER NOT NULL REFERENCES veiculos(id),
+      vendedor_id INTEGER REFERENCES vendedores(id),
       data_venda DATE NOT NULL,
-      preco_venda REAL NOT NULL,
-      comissao_percentual REAL NOT NULL DEFAULT 5.0,
-      comissao_valor REAL NOT NULL DEFAULT 0,
-      financiado INTEGER NOT NULL DEFAULT 0,
+      preco_venda NUMERIC(12,2) NOT NULL,
+      comissao_percentual NUMERIC(5,2) NOT NULL DEFAULT 5.0,
+      comissao_valor NUMERIC(12,2) NOT NULL DEFAULT 0,
+      financiado BOOLEAN NOT NULL DEFAULT FALSE,
       tipo_pagamento TEXT NOT NULL DEFAULT 'avista',
       observacao TEXT,
-      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-      FOREIGN KEY (veiculo_id) REFERENCES veiculos(id),
-      FOREIGN KEY (vendedor_id) REFERENCES vendedores(id)
-    )
-  `);
+      created_at TIMESTAMP DEFAULT NOW()
+    );
 
-  try { db.run("ALTER TABLE vendas ADD COLUMN tipo_pagamento TEXT NOT NULL DEFAULT 'avista'"); } catch(e) {}
+    CREATE TABLE IF NOT EXISTS config (
+      chave TEXT PRIMARY KEY,
+      valor TEXT NOT NULL
+    );
+  `;
 
-  db.run(`CREATE TABLE IF NOT EXISTS config (chave TEXT PRIMARY KEY, valor TEXT NOT NULL)`);
+  await pool.query(sql);
 
   const defaults = {
     whatsapp: '5511999999999',
@@ -96,49 +92,15 @@ async function initDB() {
   };
 
   for (const [chave, valor] of Object.entries(defaults)) {
-    const exist = db.exec(`SELECT valor FROM config WHERE chave = '${chave}'`);
-    if (!exist.length || !exist[0].values.length) {
-      db.run('INSERT INTO config (chave, valor) VALUES (?, ?)', [chave, valor]);
-    }
+    await pool.query('INSERT INTO config (chave, valor) VALUES ($1, $2) ON CONFLICT (chave) DO NOTHING', [chave, valor]);
   }
 
-  const s = db.exec('SELECT COUNT(*) as count FROM admin');
-  if (s.length === 0 || s[0].values[0][0] === 0) {
+  const adminCount = await pool.query('SELECT COUNT(*) as count FROM admin').then(r => r.rows[0].count);
+  if (parseInt(adminCount) === 0) {
     const hash = bcrypt.hashSync('admin123', 10);
-    db.run('INSERT INTO admin (username, password) VALUES (?, ?)', ['admin', hash]);
+    await pool.query('INSERT INTO admin (username, password) VALUES ($1, $2)', ['admin', hash]);
     console.log('Admin padrão criado: admin / admin123');
   }
-
-  saveDB();
-  return db;
-}
-
-function saveDB() {
-  const data = db.export();
-  const buffer = Buffer.from(data);
-  fs.writeFileSync(DB_PATH, buffer);
-}
-
-function query(sql, params = []) {
-  const stmt = db.prepare(sql);
-  stmt.bind(params);
-  const rows = [];
-  while (stmt.step()) {
-    rows.push(stmt.getAsObject());
-  }
-  stmt.free();
-  return rows;
-}
-
-function get(sql, params = []) {
-  const rows = query(sql, params);
-  return rows.length > 0 ? rows[0] : null;
-}
-
-function run(sql, params = []) {
-  db.run(sql, params);
-  saveDB();
-  return { changes: db.getRowsModified() };
 }
 
 function parseImagens(veiculo) {
@@ -156,9 +118,9 @@ function primeiraImagem(veiculo) {
   return imgs.length > 0 ? imgs[0] : null;
 }
 
-function getConfig(chave, padrao = '') {
-  const row = get('SELECT valor FROM config WHERE chave = ?', [chave]);
+async function getConfig(chave, padrao = '') {
+  const row = await get('SELECT valor FROM config WHERE chave = $1', [chave]);
   return row ? row.valor : padrao;
 }
 
-module.exports = { initDB, query, get, run, saveDB, parseImagens, primeiraImagem, getConfig };
+module.exports = { initDB, query, get, run, parseImagens, primeiraImagem, getConfig };

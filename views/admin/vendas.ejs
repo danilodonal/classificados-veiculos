@@ -1,0 +1,43 @@
+<%- include('partials/head', { titulo: 'Vendas', pagina: 'vendas' }) %>
+
+<h5 class="page-title"><i class="bi bi-cart-check me-1"></i> Histórico de Vendas</h5>
+
+<div class="card-admin">
+  <div class="card-admin-body p-0 p-md-3">
+    <div class="table-responsive">
+      <table class="table table-sm table-hover align-middle mb-0 table-mobile-cards">
+        <thead class="table-light">
+          <tr>
+            <th>Data</th>
+            <th>Veículo</th>
+            <th>Vendedor</th>
+            <th>Preço</th>
+            <th>Comissão</th>
+            <th>Tipo</th>
+            <th class="text-center">Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% vendas.forEach(v => { %>
+            <tr>
+              <td data-label="Data"><%= new Date(v.data_venda).toLocaleDateString('pt-BR') %></td>
+              <td data-label="Veículo"><strong><%= v.marca %> <%= v.modelo %></strong> <small class="text-muted"><%= v.ano_fabricacao %></small></td>
+              <td data-label="Vendedor"><%= v.vendedor_nome || '<span class="text-muted">-</span>' %></td>
+              <td data-label="Preço">R$ <%= v.preco_venda.toLocaleString('pt-BR', {minimumFractionDigits:2}) %></td>
+              <td data-label="Comissão">R$ <%= v.comissao_valor.toLocaleString('pt-BR', {minimumFractionDigits:2}) %></td>
+              <td data-label="Tipo"><%= v.tipo_pagamento === 'financiado' ? '<span class="badge bg-info text-dark rounded-pill">Financiado</span>' : '<span class="badge bg-success rounded-pill">À vista</span>' %></td>
+              <td data-label="Ações" class="text-center text-md-start">
+                <a href="/admin/vendas/excluir/<%= v.id %>" class="btn btn-outline-danger btn-sm" onclick="return confirm('Excluir venda? O veículo voltará ao estoque.')"><i class="bi bi-x-lg"></i> <span class="d-none d-md-inline">Excluir</span></a>
+              </td>
+            </tr>
+          <% }) %>
+          <% if (vendas.length === 0) { %>
+            <tr><td colspan="7" class="text-center text-muted py-4">Nenhuma venda registrada.</td></tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<%- include('partials/foot') %>

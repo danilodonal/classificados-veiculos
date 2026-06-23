@@ -1,0 +1,114 @@
+<%- include('partials/head', { titulo: veiculo ? 'Editar Veículo' : 'Novo Veículo', pagina: 'dashboard' }) %>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h5 class="mb-0 page-title"><i class="bi bi-<%= veiculo ? 'pencil' : 'plus-circle' %> me-1"></i> <%= veiculo ? 'Editar Veículo' : 'Novo Veículo' %></h5>
+  <a href="/admin" class="btn btn-outline-secondary btn-sm rounded-pill px-3"><i class="bi bi-arrow-left"></i> Voltar</a>
+</div>
+
+<% if (erro) { %>
+  <div class="alert alert-danger py-2"><i class="bi bi-exclamation-triangle me-1"></i> <%= erro %></div>
+<% } %>
+
+<div class="card-admin">
+  <div class="card-admin-body">
+    <form method="POST" enctype="multipart/form-data" class="row g-3">
+      <div class="col-md-6">
+        <label class="form-label small fw-medium">Marca *</label>
+        <select name="marca" class="form-select" required>
+          <option value="">Selecione...</option>
+          <% ['BMW', 'Chevrolet', 'Citroën', 'Fiat', 'Ford', 'Honda', 'Hyundai', 'Jeep', 'Kia', 'Mercedes-Benz', 'Nissan', 'Peugeot', 'Renault', 'Subaru', 'Suzuki', 'Toyota', 'Volkswagen', 'Volvo'].forEach(m => { %>
+            <option value="<%= m %>" <%= veiculo && veiculo.marca === m ? 'selected' : '' %>><%= m %></option>
+          <% }) %>
+        </select>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label small fw-medium">Modelo *</label>
+        <input type="text" name="modelo" class="form-control" value="<%= veiculo ? veiculo.modelo : '' %>" required>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label small fw-medium">Ano Fabricação *</label>
+        <input type="number" name="ano_fabricacao" class="form-control" min="1950" max="2027" value="<%= veiculo ? veiculo.ano_fabricacao : '2024' %>" required>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label small fw-medium">Ano Modelo *</label>
+        <input type="number" name="ano_modelo" class="form-control" min="1950" max="2027" value="<%= veiculo ? veiculo.ano_modelo : '2025' %>" required>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label small fw-medium">Quilometragem</label>
+        <input type="number" name="quilometragem" class="form-control" min="0" value="<%= veiculo ? veiculo.quilometragem : '0' %>">
+      </div>
+      <div class="col-md-3">
+        <label class="form-label small fw-medium">Preço (R$) *</label>
+        <input type="number" name="preco" class="form-control" step="0.01" min="0" value="<%= veiculo ? veiculo.preco : '' %>" required>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label small fw-medium">Combustível</label>
+        <select name="combustivel" class="form-select">
+          <% ['Gasolina', 'Etanol', 'Flex', 'Diesel', 'Elétrico', 'Híbrido'].forEach(c => { %>
+            <option value="<%= c %>" <%= veiculo && veiculo.combustivel === c ? 'selected' : '' %>><%= c %></option>
+          <% }) %>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label small fw-medium">Câmbio</label>
+        <select name="cambio" class="form-select">
+          <% ['Manual', 'Automático', 'Semi-Automático', 'CVT'].forEach(c => { %>
+            <option value="<%= c %>" <%= veiculo && veiculo.cambio === c ? 'selected' : '' %>><%= c %></option>
+          <% }) %>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label small fw-medium">Cor</label>
+        <input type="text" name="cor" class="form-control" value="<%= veiculo ? veiculo.cor : 'Branco' %>">
+      </div>
+      <div class="col-md-3">
+        <label class="form-label small fw-medium">Portas</label>
+        <select name="portas" class="form-select">
+          <% [2, 3, 4, 5].forEach(p => { %>
+            <option value="<%= p %>" <%= veiculo && veiculo.portas === p ? 'selected' : '' %>><%= p %> portas</option>
+          <% }) %>
+        </select>
+      </div>
+      <div class="col-12">
+        <label class="form-label small fw-medium">Descrição</label>
+        <textarea name="descricao" class="form-control" rows="4"><%= veiculo ? veiculo.descricao : '' %></textarea>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label small fw-medium">Imagens (máx 10)</label>
+        <input type="file" name="imagens" class="form-control" accept="image/jpeg,image/png,image/webp" multiple>
+        <small class="text-muted">Selecione uma ou mais fotos. Máx 5MB cada.</small>
+        <% if (veiculo && veiculo.imagem) { %>
+          <% const imgs = parseImagens(veiculo) %>
+          <div class="mt-2 d-flex gap-2 flex-wrap">
+            <% imgs.forEach(img => { %>
+              <div style="position:relative;display:inline-block">
+                <img src="<%= img %>" style="height:70px;width:100px;object-fit:cover;border-radius:8px;" alt="Foto">
+              </div>
+            <% }) %>
+          </div>
+          <small class="text-muted d-block mt-1"><%= imgs.length %> foto(s) atual(is). Envie novas para adicionar mais.</small>
+        <% } %>
+      </div>
+      <% if (veiculo) { %>
+        <div class="col-6 col-md-3">
+          <div class="form-check mt-2">
+            <input type="checkbox" name="destaque" class="form-check-input" value="1" <%= veiculo.destaque ? 'checked' : '' %>>
+            <label class="form-check-label small">Destacar veículo</label>
+          </div>
+        </div>
+        <div class="col-6 col-md-3">
+          <div class="form-check mt-2">
+            <input type="checkbox" name="vendido" class="form-check-input" value="1" <%= veiculo.vendido ? 'checked' : '' %>>
+            <label class="form-check-label small">Marcar como vendido</label>
+          </div>
+        </div>
+      <% } %>
+      <div class="col-12 d-flex gap-2">
+        <button type="submit" class="btn btn-success rounded-pill px-4"><i class="bi bi-save"></i> Salvar</button>
+        <a href="/admin" class="btn btn-outline-secondary rounded-pill px-3">Cancelar</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<%- include('partials/foot') %>

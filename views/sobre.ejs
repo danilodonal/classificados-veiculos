@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sobre - AutoClassificados</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root { --primaria: <%= cor_primaria %>; --secundaria: <%= cor_secundaria %>; --destaque: <%= cor_destaque %>; --fundo: <%= cor_fundo %>; }
+    * { font-family: 'Inter', sans-serif; }
+    body { background: var(--fundo); }
+    .top-bar { background: var(--primaria); color: #fff; font-size: 0.78rem; padding: 6px 0; }
+    .top-bar a { color: #fff; }
+    .navbar-custom { background: var(--secundaria); padding: 12px 0; }
+    .navbar-nav .nav-link { color: rgba(255,255,255,0.75); font-size: 0.88rem; padding: 0.3rem 0.7rem !important; border-radius: 8px; }
+    .navbar-nav .nav-link:hover, .navbar-nav .nav-link.active { color: #fff; background: rgba(255,255,255,0.1); }
+    .page-header { background: linear-gradient(135deg, var(--secundaria) 0%, #16213e 50%, var(--primaria) 100%); padding: 2.5rem 0; color: #fff; }
+    .page-header h1 { font-size: 1.8rem; font-weight: 800; }
+    .content-box { background: #fff; border-radius: 16px; padding: 2rem; box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
+    .content-box h4 { font-weight: 700; color: var(--secundaria); margin-top: 1.5rem; }
+    .content-box h4:first-child { margin-top: 0; }
+    .content-box p { font-size: 0.95rem; color: #555; line-height: 1.8; }
+    .stat { text-align: center; padding: 1.5rem; background: var(--fundo); border-radius: 12px; }
+    .stat .number { font-size: 2rem; font-weight: 800; color: var(--destaque); }
+    .stat .label { font-size: 0.85rem; color: #666; }
+    footer { background: var(--secundaria); }
+  </style>
+</head>
+<body>
+  <%- include('partials/topbar') %>
+  <nav class="navbar navbar-expand-md navbar-dark navbar-custom">
+    <div class="container">
+      <a class="navbar-brand fw-bold" href="/"><i class="bi bi-car-front-fill me-1"></i> AutoClassificados</a>
+      <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#menuNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="menuNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link" href="/ofertas">Ofertas</a></li>
+          <li class="nav-item"><a class="nav-link" href="/">Estoque</a></li>
+          <li class="nav-item"><a class="nav-link" href="/vender">Venda seu carro</a></li>
+          <li class="nav-item"><a class="nav-link" href="/financie">Financie</a></li>
+          <li class="nav-item"><a class="nav-link active" href="/sobre">Sobre</a></li>
+        </ul>
+        
+      </div>
+    </div>
+  </nav>
+
+  <div class="page-header">
+    <div class="container">
+      <h1><i class="bi bi-building me-2"></i>Sobre nós</h1>
+      <p class="mb-0 opacity-75">Conheça nossa história e o que nos move</p>
+    </div>
+  </div>
+
+  <div class="container my-4">
+    <div class="row g-4">
+      <div class="col-lg-8">
+        <div class="content-box">
+          <h4><i class="bi bi-bookmark-heart me-2 text-danger"></i>Nossa História</h4>
+          <p>Somos uma loja especializada na venda de veículos novos e seminovos. Com anos de experiência no mercado automotivo, construímos uma reputação baseada em confiança, transparência e satisfação dos nossos clientes.</p>
+          <p>Acreditamos que comprar um carro deve ser uma experiência prazerosa e sem complicações. Por isso, oferecemos uma seleção criteriosa de veículos, todos revisados e com procedência garantida.</p>
+
+          <h4><i class="bi bi-people me-2 text-primary"></i>Nosso Compromisso</h4>
+          <p>Nosso compromisso é oferecer o melhor veículo dentro do seu orçamento, com total transparência em cada etapa da negociação. Do primeiro contato à entrega das chaves, você terá todo o suporte da nossa equipe.</p>
+
+          <h4><i class="bi bi-shield-check me-2 text-success"></i>Por que escolher a gente?</h4>
+          <p>Veículos vistoriados e com documentação 100% regularizada, garantia em todos os veículos, financiamento facilitado com as melhores taxas do mercado, suporte pós-venda e muito mais.</p>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="row g-3">
+          <div class="col-6 col-lg-12">
+            <div class="stat">
+              <div class="number">+500</div>
+              <div class="label">Carros vendidos</div>
+            </div>
+          </div>
+          <div class="col-6 col-lg-12">
+            <div class="stat">
+              <div class="number">10+</div>
+              <div class="label">Anos de mercado</div>
+            </div>
+          </div>
+          <div class="col-6 col-lg-12">
+            <div class="stat">
+              <div class="number">98%</div>
+              <div class="label">Clientes satisfeitos</div>
+            </div>
+          </div>
+          <div class="col-6 col-lg-12">
+            <div class="stat">
+              <div class="number">24h</div>
+              <div class="label">Aprovação de crédito</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="text-white text-center py-4 mt-4">
+    <small>&copy; 2026 AutoClassificados. Todos os direitos reservados.</small>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

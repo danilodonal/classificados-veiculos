@@ -1,0 +1,94 @@
+<%- include('partials/head', { titulo: 'Configurações', pagina: 'dashboard' }) %>
+
+<h5 class="page-title"><i class="bi bi-gear me-1"></i> Configurações do site</h5>
+
+<% if (salvo) { %>
+  <div class="alert alert-success py-2"><i class="bi bi-check-circle me-1"></i> Configurações salvas com sucesso!</div>
+<% } %>
+
+<form method="POST">
+  <div class="row g-4">
+    <div class="col-md-6">
+      <div class="card-admin">
+        <div class="card-admin-body">
+          <h6 class="fw-bold mb-3"><i class="bi bi-whatsapp text-success"></i> WhatsApp</h6>
+          <div class="mb-2">
+            <label class="form-label small fw-medium">Número (com código do país)</label>
+            <input type="text" name="whatsapp" class="form-control" value="<%= whatsapp %>">
+            <small class="text-muted">Ex: 5511999999999</small>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="card-admin">
+        <div class="card-admin-body">
+          <h6 class="fw-bold mb-3"><i class="bi bi-clock text-primary"></i> Horários de funcionamento</h6>
+          <div class="row g-2">
+            <div class="col-6">
+              <label class="form-label small fw-medium">Seg-Sex abre</label>
+              <input type="text" name="hora_seg_sex_abre" class="form-control" value="<%= hora_seg_sex_abre %>">
+            </div>
+            <div class="col-6">
+              <label class="form-label small fw-medium">Seg-Sex fecha</label>
+              <input type="text" name="hora_seg_sex_fecha" class="form-control" value="<%= hora_seg_sex_fecha %>">
+            </div>
+            <div class="col-6">
+              <label class="form-label small fw-medium">Sáb abre</label>
+              <input type="text" name="hora_sab_abre" class="form-control" value="<%= hora_sab_abre %>">
+            </div>
+            <div class="col-6">
+              <label class="form-label small fw-medium">Sáb fecha</label>
+              <input type="text" name="hora_sab_fecha" class="form-control" value="<%= hora_sab_fecha %>">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="card-admin">
+        <div class="card-admin-body">
+          <h6 class="fw-bold mb-3"><i class="bi bi-palette text-danger"></i> Cores do site</h6>
+          <div class="row g-2">
+            <div class="col-6">
+              <label class="form-label small fw-medium">Cor primária</label>
+              <div class="input-group">
+                <input type="color" class="form-control form-control-color p-1" value="<%= cor_primaria %>" style="max-width:50px" oninput="this.nextElementSibling.value=this.value">
+                <input type="text" name="cor_primaria" class="form-control" value="<%= cor_primaria %>" oninput="this.previousElementSibling.value=this.value">
+              </div>
+            </div>
+            <div class="col-6">
+              <label class="form-label small fw-medium">Cor secundária</label>
+              <div class="input-group">
+                <input type="color" class="form-control form-control-color p-1" value="<%= cor_secundaria %>" style="max-width:50px" oninput="this.nextElementSibling.value=this.value">
+                <input type="text" name="cor_secundaria" class="form-control" value="<%= cor_secundaria %>" oninput="this.previousElementSibling.value=this.value">
+              </div>
+            </div>
+            <div class="col-6">
+              <label class="form-label small fw-medium">Cor de destaque</label>
+              <div class="input-group">
+                <input type="color" class="form-control form-control-color p-1" value="<%= cor_destaque %>" style="max-width:50px" oninput="this.nextElementSibling.value=this.value">
+                <input type="text" name="cor_destaque" class="form-control" value="<%= cor_destaque %>" oninput="this.previousElementSibling.value=this.value">
+              </div>
+            </div>
+            <div class="col-6">
+              <label class="form-label small fw-medium">Cor de fundo</label>
+              <div class="input-group">
+                <input type="color" class="form-control form-control-color p-1" value="<%= cor_fundo %>" style="max-width:50px" oninput="this.nextElementSibling.value=this.value">
+                <input type="text" name="cor_fundo" class="form-control" value="<%= cor_fundo %>" oninput="this.previousElementSibling.value=this.value">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12">
+      <button type="submit" class="btn btn-danger rounded-pill px-4"><i class="bi bi-save"></i> Salvar todas as configurações</button>
+    </div>
+  </div>
+</form>
+
+<%- include('partials/foot') %>

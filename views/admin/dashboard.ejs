@@ -1,0 +1,96 @@
+<%- include('partials/head', { titulo: 'Dashboard', pagina: 'dashboard', css: '.card-img-admin { width: 80px; height: 60px; object-fit: cover; border-radius: 8px; }' }) %>
+
+<div class="row g-3 mb-4">
+  <div class="col-6 col-md-3">
+    <div class="stat-card bg-primary">
+      <div class="d-flex justify-content-between">
+        <div><div class="number"><%= veiculosDisponiveis %></div><div class="label">Em estoque</div></div>
+        <div class="icon"><i class="bi bi-car-front"></i></div>
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="stat-card bg-success">
+      <div class="d-flex justify-content-between">
+        <div><div class="number"><%= totalVendas.total %></div><div class="label">Total vendas</div></div>
+        <div class="icon"><i class="bi bi-cart-check"></i></div>
+      </div>
+      <small class="opacity-75">R$ <%= (totalVendas.soma || 0).toLocaleString('pt-BR', {minimumFractionDigits:2}) %></small>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="stat-card bg-warning text-dark">
+      <div class="d-flex justify-content-between">
+        <div><div class="number"><%= vendasMes.total %></div><div class="label">Vendas no mês</div></div>
+        <div class="icon"><i class="bi bi-calendar-month"></i></div>
+      </div>
+      <small class="opacity-75">R$ <%= (vendasMes.soma || 0).toLocaleString('pt-BR', {minimumFractionDigits:2}) %></small>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="stat-card bg-info text-dark">
+      <div class="d-flex justify-content-between">
+        <div><div class="number"><%= totalVendedores.total %></div><div class="label">Vendedores</div></div>
+        <div class="icon"><i class="bi bi-people"></i></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h5 class="mb-0 page-title"><i class="bi bi-collection me-1"></i> Veículos</h5>
+  <a href="/admin/novo" class="btn btn-success btn-sm rounded-pill px-3"><i class="bi bi-plus-circle"></i> Novo Veículo</a>
+</div>
+
+<div class="card-admin">
+  <div class="card-admin-body p-0 p-md-3">
+    <div class="table-responsive">
+      <table class="table table-sm table-hover align-middle mb-0 table-mobile-cards">
+        <thead class="table-light">
+          <tr>
+            <th style="width:70px">Img</th>
+            <th>Veículo</th>
+            <th>Ano</th>
+            <th>KM</th>
+            <th>Preço</th>
+            <th>Status</th>
+            <th class="text-center" style="width:200px">Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% veiculos.forEach(v => { %>
+            <tr class="<%= v.destaque ? 'table-warning' : '' %>">
+              <td data-label="Foto"><img src="<%= primeiraImagem(v) || 'https://placehold.co/80x60/e9ecef/666?text=N/A' %>" class="card-img-admin" alt=""></td>
+              <td data-label="Veículo"><strong><%= v.marca %> <%= v.modelo %></strong></td>
+              <td data-label="Ano"><%= v.ano_fabricacao %>/<%= v.ano_modelo %></td>
+              <td data-label="KM"><%= v.quilometragem.toLocaleString() %></td>
+              <td data-label="Preço">R$ <%= v.preco.toLocaleString('pt-BR', { minimumFractionDigits: 2 }) %></td>
+              <td data-label="Status">
+                <% if (v.vendido) { %>
+                  <span class="badge bg-danger rounded-pill">Vendido</span>
+                <% } else if (v.destaque) { %>
+                  <span class="badge bg-warning text-dark rounded-pill">Destaque</span>
+                <% } else { %>
+                  <span class="badge bg-success rounded-pill">Disponível</span>
+                <% } %>
+              </td>
+              <td data-label="Ações" class="text-center text-md-start">
+                <a href="/veiculo/<%= v.id %>" class="btn btn-outline-info btn-sm" title="Visualizar"><i class="bi bi-eye"></i> <span class="d-none d-md-inline">Ver</span></a>
+                <a href="/admin/editar/<%= v.id %>" class="btn btn-outline-primary btn-sm" title="Editar"><i class="bi bi-pencil"></i> <span class="d-none d-md-inline">Editar</span></a>
+                <% if (!v.vendido) { %>
+                  <a href="/admin/vendas/nova/<%= v.id %>" class="btn btn-outline-success btn-sm" title="Registrar venda"><i class="bi bi-cart-check"></i> <span class="d-none d-md-inline">Vender</span></a>
+                <% } %>
+                <a href="/admin/excluir/<%= v.id %>" class="btn btn-outline-danger btn-sm" title="Excluir" onclick="return confirm('Tem certeza?')"><i class="bi bi-trash"></i> <span class="d-none d-md-inline">Excluir</span></a>
+              </td>
+            </tr>
+          <% }) %>
+          <% if (veiculos.length === 0) { %>
+            <tr><td colspan="7" class="text-center text-muted py-4">Nenhum veículo cadastrado.</td></tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<%- include('partials/foot') %>

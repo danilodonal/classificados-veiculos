@@ -1,0 +1,74 @@
+<%- include('partials/head', { titulo: 'Registrar Venda', pagina: 'vendas' }) %>
+
+<div class="row g-4">
+  <div class="col-md-5">
+    <div class="card-admin">
+      <div class="card-admin-body p-0">
+        <img src="<%= primeiraImagem(veiculo) || 'https://placehold.co/600x400/e9ecef/999?text=Sem+Imagem' %>" class="w-100" style="height:200px;object-fit:cover;border-radius:14px 14px 0 0;" alt="">
+        <div class="p-3">
+          <h5 class="fw-bold mb-1"><%= veiculo.marca %> <%= veiculo.modelo %></h5>
+          <p class="text-muted small mb-2"><%= veiculo.ano_fabricacao %>/<%= veiculo.ano_modelo %> &bull; <%= veiculo.quilometragem.toLocaleString() %> km</p>
+          <h4 class="text-danger fw-bold">R$ <%= veiculo.preco.toLocaleString('pt-BR', {minimumFractionDigits:2}) %></h4>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-7">
+    <h5 class="page-title"><i class="bi bi-cart-check me-1"></i> Registrar Venda</h5>
+
+    <% if (erro) { %><div class="alert alert-danger py-2"><%= erro %></div><% } %>
+
+    <div class="card-admin">
+      <div class="card-admin-body">
+        <form method="POST">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label small fw-medium">Data da venda *</label>
+              <input type="date" name="data_venda" class="form-control" value="<%= new Date().toISOString().split('T')[0] %>" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label small fw-medium">Preço vendido *</label>
+              <input type="number" name="preco_venda" class="form-control" step="0.01" min="0" value="<%= veiculo.preco %>" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label small fw-medium">Vendedor</label>
+              <select name="vendedor_id" class="form-select">
+                <option value="">Selecione...</option>
+                <% vendedores.forEach(v => { %>
+                  <option value="<%= v.id %>"><%= v.nome %> (<%= v.comissao_percentual %>% )</option>
+                <% }) %>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label small fw-medium">Comissão (%)</label>
+              <input type="number" name="comissao_percentual" class="form-control" step="0.1" min="0" value="5">
+            </div>
+            <div class="col-12">
+              <label class="form-label small fw-medium">Tipo de pagamento</label>
+              <div class="d-flex gap-4">
+                <div class="form-check">
+                  <input type="radio" name="tipo_pagamento" class="form-check-input" value="avista" checked>
+                  <label class="form-check-label">À vista</label>
+                </div>
+                <div class="form-check">
+                  <input type="radio" name="tipo_pagamento" class="form-check-input" value="financiado">
+                  <label class="form-check-label">Financiado</label>
+                </div>
+              </div>
+            </div>
+            <div class="col-12">
+              <label class="form-label small fw-medium">Observação</label>
+              <textarea name="observacao" class="form-control" rows="2" placeholder="Forma de pagamento, observações..."></textarea>
+            </div>
+            <div class="col-12 d-flex gap-2">
+              <button type="submit" class="btn btn-success rounded-pill px-4"><i class="bi bi-check-lg"></i> Confirmar Venda</button>
+              <a href="/admin" class="btn btn-outline-secondary rounded-pill px-3">Cancelar</a>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('partials/foot') %>

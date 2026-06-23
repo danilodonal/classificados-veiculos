@@ -1,0 +1,6 @@
+<div class="top-bar">
+  <div class="container d-flex align-items-center justify-content-between">
+    <span><i class="bi bi-clock me-1"></i> Seg a Sex <%= hora_seg_sex_abre %>-<%= hora_seg_sex_fecha %> | Sáb <%= hora_sab_abre %>-<%= hora_sab_fecha %></span>
+    <a href="https://wa.me/<%= whatsapp %>" target="_blank" class="text-white text-decoration-none small"><i class="bi bi-whatsapp me-1"></i> <%= whatsapp.replace('55', '').replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3') %></a>
+  </div>
+</div>

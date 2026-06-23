@@ -1,0 +1,43 @@
+<%- include('partials/head', { titulo: vendedor ? 'Editar Vendedor' : 'Novo Vendedor', pagina: 'vendedores' }) %>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h5 class="mb-0 page-title"><i class="bi bi-<%= vendedor ? 'pencil' : 'plus-circle' %> me-1"></i> <%= vendedor ? 'Editar Vendedor' : 'Novo Vendedor' %></h5>
+  <a href="/admin/vendedores" class="btn btn-outline-secondary btn-sm rounded-pill px-3"><i class="bi bi-arrow-left"></i> Voltar</a>
+</div>
+
+<% if (erro) { %>
+  <div class="alert alert-danger py-2"><%= erro %></div>
+<% } %>
+
+<div class="card-admin">
+  <div class="card-admin-body" style="max-width:500px">
+    <form method="POST">
+      <div class="mb-3">
+        <label class="form-label small fw-medium">Nome *</label>
+        <input type="text" name="nome" class="form-control" value="<%= vendedor ? vendedor.nome : '' %>" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label small fw-medium">Telefone</label>
+        <input type="text" name="telefone" class="form-control" value="<%= vendedor ? vendedor.telefone : '' %>">
+      </div>
+      <div class="mb-3">
+        <label class="form-label small fw-medium">E-mail</label>
+        <input type="email" name="email" class="form-control" value="<%= vendedor ? vendedor.email : '' %>">
+      </div>
+      <div class="mb-3">
+        <label class="form-label small fw-medium">Comissão (%)</label>
+        <input type="number" name="comissao_percentual" class="form-control" step="0.1" min="0" value="<%= vendedor ? vendedor.comissao_percentual : '5' %>">
+      </div>
+      <% if (vendedor) { %>
+        <div class="mb-3 form-check">
+          <input type="checkbox" name="ativo" class="form-check-input" value="1" <%= vendedor.ativo ? 'checked' : '' %>>
+          <label class="form-check-label">Ativo</label>
+        </div>
+      <% } %>
+      <button type="submit" class="btn btn-success rounded-pill px-4"><i class="bi bi-save"></i> Salvar</button>
+      <a href="/admin/vendedores" class="btn btn-outline-secondary rounded-pill px-3">Cancelar</a>
+    </form>
+  </div>
+</div>
+
+<%- include('partials/foot') %>

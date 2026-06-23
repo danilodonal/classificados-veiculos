@@ -1,0 +1,91 @@
+<%- include('partials/head', { titulo: 'Análises', pagina: 'analytics' }) %>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h5 class="mb-0 page-title"><i class="bi bi-graph-up me-1"></i> Análises de Vendas</h5>
+  <div class="btn-group">
+    <a href="/admin/analytics?periodo=semana" class="btn btn-sm <%= periodo === 'semana' ? 'btn-dark' : 'btn-outline-dark' %> rounded-start-pill">Semana</a>
+    <a href="/admin/analytics?periodo=mes" class="btn btn-sm <%= periodo === 'mes' ? 'btn-dark' : 'btn-outline-dark' %> rounded-end-pill">Mês</a>
+  </div>
+</div>
+
+<div class="row g-3 mb-4">
+  <div class="col-6 col-md-4">
+    <div class="stat-card bg-primary">
+      <div class="number" style="font-size:1.1rem">R$ <%= totalFaturado.toLocaleString('pt-BR', {minimumFractionDigits:2}) %></div>
+      <div class="label">Total faturado</div>
+    </div>
+  </div>
+  <div class="col-6 col-md-4">
+    <div class="stat-card bg-success">
+      <div class="number" style="font-size:1.1rem">R$ <%= totalComissao.toLocaleString('pt-BR', {minimumFractionDigits:2}) %></div>
+      <div class="label">Total em comissões</div>
+    </div>
+  </div>
+  <div class="col-6 col-md-4">
+    <div class="stat-card bg-info text-dark">
+      <div class="number" style="font-size:1.1rem"><%= totalFinanciados %></div>
+      <div class="label">Vendas financiadas</div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-4">
+  <div class="col-md-7">
+    <h6 class="fw-bold mb-2"><i class="bi bi-list-ul me-1"></i> Vendas do período</h6>
+    <div class="card-admin">
+      <div class="card-admin-body p-0 p-md-3">
+        <div class="table-responsive">
+          <table class="table table-sm table-hover align-middle mb-0 table-mobile-cards">
+            <thead class="table-light">
+              <tr><th>Data</th><th>Veículo</th><th>Vendedor</th><th>Valor</th><th>Comissão</th><th>Fin.</th></tr>
+            </thead>
+            <tbody>
+              <% vendasPeriodo.forEach(v => { %>
+                <tr>
+                  <td data-label="Data"><%= new Date(v.data_venda).toLocaleDateString('pt-BR') %></td>
+                  <td data-label="Veículo"><%= v.marca %> <%= v.modelo %></td>
+                  <td data-label="Vendedor"><%= v.vendedor_nome || '-' %></td>
+                  <td data-label="Valor">R$ <%= v.preco_venda.toLocaleString('pt-BR', {minimumFractionDigits:2}) %></td>
+                  <td data-label="Comissão">R$ <%= v.comissao_valor.toLocaleString('pt-BR', {minimumFractionDigits:2}) %></td>
+                  <td data-label="Tipo"><%= v.tipo_pagamento === 'financiado' ? '<span class="badge bg-info text-dark rounded-pill">Fin</span>' : '<span class="badge bg-success rounded-pill">Av</span>' %></td>
+                </tr>
+              <% }) %>
+              <% if (vendasPeriodo.length === 0) { %>
+                <tr><td colspan="6" class="text-center text-muted py-3">Nenhuma venda no período.</td></tr>
+              <% } %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-5">
+    <h6 class="fw-bold mb-2"><i class="bi bi-trophy me-1"></i> Desempenho por vendedor</h6>
+    <div class="card-admin">
+      <div class="card-admin-body p-0 p-md-3">
+        <div class="table-responsive">
+          <table class="table table-sm table-hover align-middle mb-0 table-mobile-cards">
+            <thead class="table-light">
+              <tr><th>Vendedor</th><th>Vendas</th><th>Total</th><th>Comissão</th></tr>
+            </thead>
+            <tbody>
+              <% vendasPorVendedor.forEach(v => { %>
+                <tr>
+                  <td data-label="Vendedor"><strong><%= v.nome %></strong></td>
+                  <td data-label="Vendas"><%= v.total %></td>
+                  <td data-label="Total">R$ <%= v.soma.toLocaleString('pt-BR', {minimumFractionDigits:2}) %></td>
+                  <td data-label="Comissão">R$ <%= v.comissao.toLocaleString('pt-BR', {minimumFractionDigits:2}) %></td>
+                </tr>
+              <% }) %>
+              <% if (vendasPorVendedor.length === 0) { %>
+                <tr><td colspan="4" class="text-center text-muted py-3">Nenhum dado no período.</td></tr>
+              <% } %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('partials/foot') %>

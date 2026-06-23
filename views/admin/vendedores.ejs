@@ -1,0 +1,45 @@
+<%- include('partials/head', { titulo: 'Vendedores', pagina: 'vendedores' }) %>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h5 class="mb-0 page-title"><i class="bi bi-people me-1"></i> Vendedores</h5>
+  <a href="/admin/vendedores/novo" class="btn btn-success btn-sm rounded-pill px-3"><i class="bi bi-plus-circle"></i> Novo Vendedor</a>
+</div>
+
+<div class="card-admin">
+  <div class="card-admin-body p-0 p-md-3">
+    <div class="table-responsive">
+      <table class="table table-sm table-hover align-middle mb-0 table-mobile-cards">
+        <thead class="table-light">
+          <tr>
+            <th>Nome</th>
+            <th>Telefone</th>
+            <th>E-mail</th>
+            <th>Comissão</th>
+            <th>Status</th>
+            <th class="text-center">Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% vendedores.forEach(v => { %>
+            <tr>
+              <td data-label="Nome"><strong><%= v.nome %></strong></td>
+              <td data-label="Telefone"><%= v.telefone || '-' %></td>
+              <td data-label="E-mail"><%= v.email || '-' %></td>
+              <td data-label="Comissão"><%= v.comissao_percentual %>%</td>
+              <td data-label="Status"><%- v.ativo ? '<span class="badge bg-success rounded-pill">Ativo</span>' : '<span class="badge bg-secondary rounded-pill">Inativo</span>' %></td>
+              <td data-label="Ações" class="text-center text-md-start">
+                <a href="/admin/vendedores/editar/<%= v.id %>" class="btn btn-outline-primary btn-sm"><i class="bi bi-pencil"></i> <span class="d-none d-md-inline">Editar</span></a>
+                <a href="/admin/vendedores/excluir/<%= v.id %>" class="btn btn-outline-danger btn-sm" onclick="return confirm('Excluir vendedor?')"><i class="bi bi-trash"></i> <span class="d-none d-md-inline">Excluir</span></a>
+              </td>
+            </tr>
+          <% }) %>
+          <% if (vendedores.length === 0) { %>
+            <tr><td colspan="6" class="text-center text-muted py-4">Nenhum vendedor cadastrado.</td></tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<%- include('partials/foot') %>
