@@ -6,10 +6,7 @@ const path = require('path');
 const db = require('../database');
 const auth = require('../middleware/auth');
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, path.join(__dirname, '..', 'public', 'uploads')),
-  filename: (req, file, cb) => cb(null, Date.now() + '-' + Math.round(Math.random() * 1E9) + path.extname(file.originalname))
-});
+const storage = multer.memoryStorage();
 const upload = multer({ storage, limits: { fileSize: 5 * 1024 * 1024 } });
 
 // ----- LOGIN -----
@@ -57,7 +54,9 @@ router.post('/novo', auth, upload.array('imagens', 10), async (req, res) => {
   if (!marca || !modelo || !ano_fabricacao || !ano_modelo || !preco) {
     return res.render('admin/form', { veiculo: null, erro: 'Preencha todos os campos obrigatórios.' });
   }
-  const imagens = req.files && req.files.length > 0 ? JSON.stringify(req.files.map(f => '/uploads/' + f.filename)) : null;
+  const imagens = req.files && req.files.length > 0
+    ? JSON.stringify(req.files.map(f => 'data:' + f.mimetype + ';base64,' + f.buffer.toString('base64')))
+    : null;
   await db.run(
     'INSERT INTO veiculos (marca, modelo, ano_fabricacao, ano_modelo, quilometragem, combustivel, cambio, cor, portas, preco, descricao, imagem) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)',
     [marca, modelo, parseInt(ano_fabricacao), parseInt(ano_modelo), parseInt(quilometragem || 0), combustivel, cambio, cor, parseInt(portas || 4), parseFloat(preco), descricao || '', imagens]
@@ -74,13 +73,17 @@ router.get('/editar/:id', auth, async (req, res) => {
 router.post('/editar/:id', auth, upload.array('imagens', 10), async (req, res) => {
   const veiculo = await db.get('SELECT * FROM veiculos WHERE id = $1', [req.params.id]);
   if (!veiculo) return res.status(404).send('Veículo não encontrado');
-  const { marca, modelo, ano_fabricacao, ano_modelo, quilometragem, combustivel, cambio, cor, portas, preco, descricao, destaque, vendido } = req.body;
-  let imagens = veiculo.imagem;
-  if (req.files && req.files.length > 0) {
-    const existentes = db.parseImagens(veiculo);
-    const novas = req.files.map(f => '/uploads/' + f.filename);
-    imagens = JSON.stringify([...existentes, ...novas]);
+  const { marca, modelo, ano_fabricacao, ano_modelo, quilometragem, combustivel, cambio, cor, portas, preco, descricao, destaque, vendido, remover_imagens } = req.body;
+  let imagens = db.parseImagens(veiculo);
+  if (remover_imagens) {
+    const remover = Array.isArray(remover_imagens) ? remover_imagens.map(Number) : [Number(remover_imagens)];
+    imagens = imagens.filter((_, i) => !remover.includes(i));
   }
+  if (req.files && req.files.length > 0) {
+    const novas = req.files.map(f => 'data:' + f.mimetype + ';base64,' + f.buffer.toString('base64'));
+    imagens = [...imagens, ...novas];
+  }
+  imagens = imagens.length > 0 ? JSON.stringify(imagens) : null;
   await db.run(
     'UPDATE veiculos SET marca=$1, modelo=$2, ano_fabricacao=$3, ano_modelo=$4, quilometragem=$5, combustivel=$6, cambio=$7, cor=$8, portas=$9, preco=$10, descricao=$11, imagem=$12, destaque=$13, vendido=$14, updated_at=NOW() WHERE id=$15',
     [marca, modelo, parseInt(ano_fabricacao), parseInt(ano_modelo), parseInt(quilometragem || 0), combustivel, cambio, cor, parseInt(portas || 4), parseFloat(preco), descricao || '', imagens, destaque ? true : false, vendido ? true : false, req.params.id]
