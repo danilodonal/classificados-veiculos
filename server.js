@@ -1,3 +1,4 @@
+require('express-async-errors');
 const express = require('express');
 const session = require('express-session');
 const path = require('path');
@@ -31,7 +32,13 @@ initDB().then(async () => {
   app.use('/', require('./routes/index'));
   app.use('/admin', require('./routes/admin'));
 
-  app.listen(PORT, () => {
+  // error handler global
+app.use((err, req, res, next) => {
+  console.error('ERRO:', err.message, err.stack);
+  res.status(500).send('Erro interno: ' + err.message);
+});
+
+app.listen(PORT, () => {
     console.log(`Servidor rodando em http://localhost:${PORT}`);
   });
 }).catch(err => {

@@ -32,7 +32,8 @@ router.get('/logout', (req, res) => {
 // ----- USUÁRIOS (ADMIN) -----
 router.get('/usuarios', auth, async (req, res) => {
   const usuarios = await db.query('SELECT id, username, nome FROM admin ORDER BY id');
-  res.render('admin/usuarios', { usuarios, admin: req.session.admin });
+  const erro = req.query.erro || null;
+  res.render('admin/usuarios', { usuarios, admin: req.session.admin, erro });
 });
 
 router.get('/usuarios/novo', auth, (req, res) => {
@@ -72,7 +73,7 @@ router.post('/usuarios/editar/:id', auth, async (req, res) => {
 
 router.get('/usuarios/excluir/:id', auth, async (req, res) => {
   if (parseInt(req.params.id) === req.session.admin.id) {
-    return res.redirect('/admin/usuarios?erro=nao_pode_excluir_proprio');
+    return res.redirect('/admin/usuarios?erro=Você não pode excluir seu próprio usuário.');
   }
   await db.run('DELETE FROM admin WHERE id = $1', [req.params.id]);
   res.redirect('/admin/usuarios');

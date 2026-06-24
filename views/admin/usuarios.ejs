@@ -3,7 +3,7 @@
   <h1 class="page-title mb-0">Usuários do Sistema</h1>
   <a href="/admin/usuarios/novo" class="btn btn-danger rounded-pill px-3 btn-sm"><i class="bi bi-plus-lg"></i> <span class="d-none d-md-inline">Novo Usuário</span></a>
 </div>
-<% if (req.query.erro === 'nao_pode_excluir_proprio') { %><div class="alert alert-warning">Você não pode excluir seu próprio usuário.</div><% } %>
+<% if (erro) { %><div class="alert alert-warning"><%= erro %></div><% } %>
 <div class="card-admin">
   <div class="card-admin-body p-0">
     <div class="table-responsive">
