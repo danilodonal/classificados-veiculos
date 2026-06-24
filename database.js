@@ -1,5 +1,8 @@
-const { Pool } = require('pg');
+const { Pool, types } = require('pg');
 const bcrypt = require('bcryptjs');
+
+// NUMERIC OID = 1700 → converter para float para .toLocaleString() funcionar
+types.setTypeParser(1700, val => parseFloat(val));
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL || 'postgresql://postgres:postgres@localhost:5432/classificados',
