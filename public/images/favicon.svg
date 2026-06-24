@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="#e94560">
+  <path d="M5 20c0-2.8 2.2-5 5-5h12c2.8 0 5 2.2 5 5v3a5 5 0 0 1-5 5H10a5 5 0 0 1-5-5v-3z" opacity=".15"/>
+  <path d="M6 20c0-2.2 1.8-4 4-4h12c2.2 0 4 1.8 4 4v3a4 4 0 0 1-4 4H10a4 4 0 0 1-4-4v-3z" opacity=".25"/>
+  <path d="M5 21h22l-3-6H8l-3 6zm23 0h1l-3-7H6l-3 7h1" fill="currentColor" opacity=".12"/>
+  <circle cx="11" cy="25" r="4" fill="currentColor" opacity=".85"/>
+  <circle cx="11" cy="25" r="2" fill="currentColor" opacity=".3"/>
+  <circle cx="21" cy="25" r="4" fill="currentColor" opacity=".85"/>
+  <circle cx="21" cy="25" r="2" fill="currentColor" opacity=".3"/>
+  <path d="M9 16l4 4h6l4-4" fill="currentColor" opacity=".08"/>
+  <path d="M16 10l-3 6h6l-3-6z" fill="currentColor" opacity=".08"/>
+  <ellipse cx="27" cy="20" rx="1.5" ry="1" fill="currentColor" opacity=".2"/>
+  <ellipse cx="5" cy="20" rx="1.2" ry=".8" fill="currentColor" opacity=".15"/>
+</svg>
