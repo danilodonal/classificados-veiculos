@@ -1,0 +1,43 @@
+<%- include('partials/head', { titulo: 'Usuários', pagina: 'usuarios' }) %>
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1 class="page-title mb-0">Usuários do Sistema</h1>
+  <a href="/admin/usuarios/novo" class="btn btn-danger rounded-pill px-3 btn-sm"><i class="bi bi-plus-lg"></i> <span class="d-none d-md-inline">Novo Usuário</span></a>
+</div>
+<% if (req.query.erro === 'nao_pode_excluir_proprio') { %><div class="alert alert-warning">Você não pode excluir seu próprio usuário.</div><% } %>
+<div class="card-admin">
+  <div class="card-admin-body p-0">
+    <div class="table-responsive">
+      <table class="table table-hover table-mobile-cards mb-0">
+        <thead class="table-light">
+          <tr>
+            <th>ID</th>
+            <th>Nome</th>
+            <th>Username</th>
+            <th class="text-center">Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% usuarios.forEach(u => { %>
+            <tr>
+              <td data-label="ID">#<%= u.id %></td>
+              <td data-label="Nome"><%= u.nome || u.username %></td>
+              <td data-label="Username"><%= u.username %></td>
+              <td data-label="Ações" class="text-center text-md-start">
+                <a href="/admin/usuarios/editar/<%= u.id %>" class="btn btn-outline-primary btn-sm"><i class="bi bi-pencil"></i> <span class="d-none d-md-inline">Editar</span></a>
+                <% if (u.id !== admin.id) { %>
+                  <a href="/admin/usuarios/excluir/<%= u.id %>" class="btn btn-outline-danger btn-sm" onclick="return confirm('Excluir este usuário?')"><i class="bi bi-trash"></i> <span class="d-none d-md-inline">Excluir</span></a>
+                <% } else { %>
+                  <span class="badge bg-secondary">Você</span>
+                <% } %>
+              </td>
+            </tr>
+          <% }) %>
+          <% if (usuarios.length === 0) { %>
+            <tr><td colspan="4" class="text-center text-muted py-4">Nenhum usuário cadastrado.</td></tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<%- include('partials/foot') %>

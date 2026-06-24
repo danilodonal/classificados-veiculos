@@ -111,6 +111,8 @@
         <a href="/admin/vendedores" class="btn btn-light text-start d-flex align-items-center gap-3 py-2 px-3 rounded-3 <%= pagina === 'vendedores' ? 'bg-danger text-white' : '' %>"><i class="bi bi-people fs-5"></i> Vendedores</a>
         <a href="/admin/analytics?periodo=mes" class="btn btn-light text-start d-flex align-items-center gap-3 py-2 px-3 rounded-3 <%= pagina === 'analytics' ? 'bg-danger text-white' : '' %>"><i class="bi bi-graph-up fs-5"></i> Análises</a>
         <hr>
+        <a href="/admin/usuarios" class="btn btn-light text-start d-flex align-items-center gap-3 py-2 px-3 rounded-3 <%= pagina === 'usuarios' ? 'bg-danger text-white' : '' %>"><i class="bi bi-shield-lock fs-5"></i> Usuários</a>
+        <hr>
         <a href="/" class="btn btn-light text-start d-flex align-items-center gap-3 py-2 px-3 rounded-3"><i class="bi bi-eye fs-5"></i> Ver site</a>
         <a href="/admin/config" class="btn btn-light text-start d-flex align-items-center gap-3 py-2 px-3 rounded-3"><i class="bi bi-gear fs-5"></i> Configurações</a>
         <a href="/admin/logout" class="btn btn-light text-start d-flex align-items-center gap-3 py-2 px-3 rounded-3 text-danger"><i class="bi bi-box-arrow-right fs-5"></i> Sair</a>
@@ -127,6 +129,9 @@
             <a href="/admin/vendas" class="nav-link <%= pagina === 'vendas' ? 'active' : '' %>"><i class="bi bi-cart-check"></i> Vendas</a>
             <a href="/admin/vendedores" class="nav-link <%= pagina === 'vendedores' ? 'active' : '' %>"><i class="bi bi-people"></i> Vendedores</a>
             <a href="/admin/analytics?periodo=mes" class="nav-link <%= pagina === 'analytics' ? 'active' : '' %>"><i class="bi bi-graph-up"></i> Análises</a>
+            <hr class="my-1">
+            <a href="/admin/usuarios" class="nav-link <%= pagina === 'usuarios' ? 'active' : '' %>"><i class="bi bi-shield-lock"></i> Usuários</a>
+            <a href="/admin/config" class="nav-link"><i class="bi bi-gear"></i> Config</a>
           </nav>
         </div>
       </div>

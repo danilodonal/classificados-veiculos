@@ -19,7 +19,7 @@ router.post('/login', async (req, res) => {
   const { username, password } = req.body;
   const admin = await db.get('SELECT * FROM admin WHERE username = $1', [username]);
   if (admin && bcrypt.compareSync(password, admin.password)) {
-    req.session.admin = { id: admin.id, username: admin.username };
+    req.session.admin = { id: admin.id, username: admin.username, nome: admin.nome };
     return res.redirect('/admin');
   }
   res.render('admin/login', { erro: 'Usuário ou senha inválidos' });
@@ -27,6 +27,55 @@ router.post('/login', async (req, res) => {
 
 router.get('/logout', (req, res) => {
   req.session.destroy(() => res.redirect('/admin/login'));
+});
+
+// ----- USUÁRIOS (ADMIN) -----
+router.get('/usuarios', auth, async (req, res) => {
+  const usuarios = await db.query('SELECT id, username, nome FROM admin ORDER BY id');
+  res.render('admin/usuarios', { usuarios, admin: req.session.admin });
+});
+
+router.get('/usuarios/novo', auth, (req, res) => {
+  res.render('admin/usuario-form', { usuario: null, erro: null });
+});
+
+router.post('/usuarios/novo', auth, async (req, res) => {
+  const { username, password, nome } = req.body;
+  if (!username || !password) return res.render('admin/usuario-form', { usuario: null, erro: 'Username e senha são obrigatórios.' });
+  const existente = await db.get('SELECT id FROM admin WHERE username = $1', [username]);
+  if (existente) return res.render('admin/usuario-form', { usuario: null, erro: 'Username já existe.' });
+  const hash = bcrypt.hashSync(password, 10);
+  await db.run('INSERT INTO admin (username, password, nome) VALUES ($1, $2, $3)', [username, hash, nome || username]);
+  res.redirect('/admin/usuarios');
+});
+
+router.get('/usuarios/editar/:id', auth, async (req, res) => {
+  const usuario = await db.get('SELECT id, username, nome FROM admin WHERE id = $1', [req.params.id]);
+  if (!usuario) return res.status(404).send('Usuário não encontrado');
+  res.render('admin/usuario-form', { usuario, erro: null });
+});
+
+router.post('/usuarios/editar/:id', auth, async (req, res) => {
+  const { username, password, nome } = req.body;
+  const usuario = await db.get('SELECT id FROM admin WHERE id = $1', [req.params.id]);
+  if (!usuario) return res.status(404).send('Usuário não encontrado');
+  const existente = await db.get('SELECT id FROM admin WHERE username = $1 AND id != $2', [username, req.params.id]);
+  if (existente) return res.render('admin/usuario-form', { usuario: { id: req.params.id, username: usuario.username, nome: usuario.nome }, erro: 'Username já está em uso.' });
+  if (password) {
+    const hash = bcrypt.hashSync(password, 10);
+    await db.run('UPDATE admin SET username=$1, password=$2, nome=$3 WHERE id=$4', [username, hash, nome || '', req.params.id]);
+  } else {
+    await db.run('UPDATE admin SET username=$1, nome=$2 WHERE id=$3', [username, nome || '', req.params.id]);
+  }
+  res.redirect('/admin/usuarios');
+});
+
+router.get('/usuarios/excluir/:id', auth, async (req, res) => {
+  if (parseInt(req.params.id) === req.session.admin.id) {
+    return res.redirect('/admin/usuarios?erro=nao_pode_excluir_proprio');
+  }
+  await db.run('DELETE FROM admin WHERE id = $1', [req.params.id]);
+  res.redirect('/admin/usuarios');
 });
 
 // ----- DASHBOARD -----
