@@ -42,6 +42,17 @@
     .section-title { font-size: 1.3rem; font-weight: 700; color: var(--secundaria); margin-bottom: 1.2rem; padding-bottom: 0.6rem; border-bottom: 3px solid var(--destaque); display: inline-block; }
     .count-badge { background: var(--destaque); color: #fff; font-size: 0.75rem; padding: 1px 8px; border-radius: 20px; margin-left: 6px; }
     footer { background: var(--secundaria); }
+    .slides-hero { margin-bottom: 2rem; }
+    .slides-hero .carousel-inner { border-radius: 16px; overflow: hidden; box-shadow: 0 4px 24px rgba(0,0,0,0.08); }
+    .slides-hero .carousel-item img { height: 400px; object-fit: cover; }
+    .slides-hero .carousel-caption { background: linear-gradient(transparent, rgba(0,0,0,0.6)); left: 0; right: 0; bottom: 0; padding: 2rem 1.5rem 1.2rem; text-align: left; }
+    .slides-hero .carousel-caption h5 { font-weight: 700; font-size: 1.3rem; }
+    .slides-hero .carousel-indicators { margin-bottom: 0.5rem; }
+    .slides-hero .carousel-indicators button { width: 10px; height: 10px; border-radius: 50%; }
+    @media (max-width: 576px) {
+      .slides-hero .carousel-item img { height: 200px; }
+      .slides-hero .carousel-caption h5 { font-size: 0.95rem; }
+    }
     @media (max-width: 576px) {
       .hero { padding: 2rem 0 1.8rem; }
       .hero h1 { font-size: 1.5rem; }
@@ -106,6 +117,40 @@
       </div>
     </div>
   </section>
+
+  <% const slidesArr = typeof slides === 'string' ? JSON.parse(slides) : (slides || []) %>
+  <% const activeSlides = slidesArr.filter(s => s.ativo) %>
+  <% if (activeSlides.length > 0) { %>
+    <div class="slides-hero">
+      <div id="heroSlides" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
+        <div class="carousel-indicators">
+          <% activeSlides.forEach((s, i) => { %>
+            <button type="button" data-bs-target="#heroSlides" data-bs-slide-to="<%= i %>" class="<%= i === 0 ? 'active' : '' %>"></button>
+          <% }) %>
+        </div>
+        <div class="carousel-inner">
+          <% activeSlides.forEach((s, i) => { %>
+            <div class="carousel-item <%= i === 0 ? 'active' : '' %>">
+              <% if (s.link) { %><a href="<%= s.link %>"><% } %>
+                <img src="<%= s.imagem %>" class="d-block w-100" alt="<%= s.titulo || '' %>">
+                <% if (s.titulo) { %>
+                  <div class="carousel-caption d-none d-md-block">
+                    <h5><%= s.titulo %></h5>
+                  </div>
+                <% } %>
+              <% if (s.link) { %></a><% } %>
+            </div>
+          <% }) %>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#heroSlides" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon"></span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#heroSlides" data-bs-slide="next">
+          <span class="carousel-control-next-icon"></span>
+        </button>
+      </div>
+    </div>
+  <% } %>
 
   <div class="container">
     <div class="d-flex align-items-center justify-content-between mb-3">

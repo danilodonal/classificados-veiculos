@@ -1,0 +1,63 @@
+<%- include('partials/head', { titulo: 'Slides', pagina: 'slides' }) %>
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1 class="page-title mb-0">Slides do Home</h1>
+</div>
+
+<div class="row g-4">
+  <div class="col-md-5">
+    <div class="card-admin">
+      <div class="card-admin-body">
+        <h6 class="fw-bold mb-3"><i class="bi bi-plus-circle"></i> Adicionar Slide</h6>
+        <p class="text-muted small">Imagem recomendada: <strong>1920 × 600 px</strong>. Máx 6 slides.</p>
+        <% if (slides.length < 6) { %>
+          <form method="POST" action="/admin/slides/adicionar" enctype="multipart/form-data">
+            <div class="mb-2">
+              <label class="form-label small fw-medium">Imagem *</label>
+              <input type="file" name="imagem" class="form-control" accept="image/jpeg,image/png,image/webp" required>
+            </div>
+            <div class="mb-2">
+              <label class="form-label small fw-medium">Título (opcional)</label>
+              <input type="text" name="titulo" class="form-control" placeholder="Ex: Confira nossas ofertas">
+            </div>
+            <div class="mb-2">
+              <label class="form-label small fw-medium">Link (opcional)</label>
+              <input type="url" name="link" class="form-control" placeholder="https://...">
+            </div>
+            <button type="submit" class="btn btn-danger rounded-pill px-3 btn-sm mt-2"><i class="bi bi-upload"></i> Adicionar</button>
+          </form>
+        <% } else { %>
+          <div class="alert alert-info py-2 mb-0">Limite máximo de 6 slides atingido.</div>
+        <% } %>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-7">
+    <div class="card-admin">
+      <div class="card-admin-body">
+        <h6 class="fw-bold mb-3"><i class="bi bi-images"></i> Slides Atuais (<%= slides.length %>)</h6>
+        <% if (slides.length === 0) { %>
+          <p class="text-muted mb-0">Nenhum slide cadastrado.</p>
+        <% } else { %>
+          <div class="d-flex flex-column gap-2">
+            <% slides.forEach((s, i) => { %>
+              <div class="d-flex align-items-center gap-3 p-2 rounded-3 border <%= s.ativo ? '' : 'opacity-50' %>">
+                <img src="<%= s.imagem %>" alt="" style="width:120px;height:60px;object-fit:cover;border-radius:8px;flex-shrink:0">
+                <div class="flex-grow-1 min-w-0">
+                  <div class="fw-semibold small text-truncate"><%= s.titulo || '(sem título)' %></div>
+                  <div class="text-muted small text-truncate"><%= s.link || 'sem link' %></div>
+                  <span class="badge <%= s.ativo ? 'bg-success' : 'bg-secondary' %> rounded-pill mt-1"><%= s.ativo ? 'Ativo' : 'Inativo' %></span>
+                </div>
+                <div class="d-flex gap-1 flex-shrink-0">
+                  <a href="/admin/slides/toggle/<%= i %>" class="btn btn-outline-secondary btn-sm" title="Ativar/Desativar"><i class="bi <%= s.ativo ? 'bi-pause-circle' : 'bi-play-circle' %>"></i></a>
+                  <a href="/admin/slides/remover/<%= i %>" class="btn btn-outline-danger btn-sm" onclick="return confirm('Remover este slide?')" title="Remover"><i class="bi bi-trash"></i></a>
+                </div>
+              </div>
+            <% }) %>
+          </div>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</div>
+<%- include('partials/foot') %>

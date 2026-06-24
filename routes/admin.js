@@ -284,7 +284,44 @@ router.get('/analytics', auth, async (req, res) => {
   res.render('admin/analytics', { periodo, vendasPeriodo, vendasPorVendedor, totalFaturado, totalComissao, totalFinanciados, admin: req.session.admin });
 });
 
-// ----- CONFIGURAÇÕES -----
+// ----- SLIDES (Banners) -----
+router.get('/slides', auth, async (req, res) => {
+  const raw = await db.getConfig('slides', '[]');
+  const slides = JSON.parse(raw);
+  res.render('admin/slides', { slides, admin: req.session.admin, erro: null });
+});
+
+router.post('/slides/adicionar', auth, upload.single('imagem'), async (req, res) => {
+  const raw = await db.getConfig('slides', '[]');
+  const slides = JSON.parse(raw);
+  if (slides.length >= 6) return res.redirect('/admin/slides');
+  if (!req.file) return res.redirect('/admin/slides');
+  const imagem = 'data:' + req.file.mimetype + ';base64,' + req.file.buffer.toString('base64');
+  slides.push({ imagem, titulo: req.body.titulo || '', link: req.body.link || '', ativo: true });
+  await db.run('INSERT INTO config (chave, valor) VALUES ($1, $2) ON CONFLICT (chave) DO UPDATE SET valor = $2', ['slides', JSON.stringify(slides)]);
+  if (req.app.locals) req.app.locals.slides = slides;
+  res.redirect('/admin/slides');
+});
+
+router.get('/slides/remover/:idx', auth, async (req, res) => {
+  const raw = await db.getConfig('slides', '[]');
+  const slides = JSON.parse(raw);
+  const idx = parseInt(req.params.idx);
+  if (idx >= 0 && idx < slides.length) slides.splice(idx, 1);
+  await db.run('INSERT INTO config (chave, valor) VALUES ($1, $2) ON CONFLICT (chave) DO UPDATE SET valor = $2', ['slides', JSON.stringify(slides)]);
+  if (req.app.locals) req.app.locals.slides = slides;
+  res.redirect('/admin/slides');
+});
+
+router.get('/slides/toggle/:idx', auth, async (req, res) => {
+  const raw = await db.getConfig('slides', '[]');
+  const slides = JSON.parse(raw);
+  const idx = parseInt(req.params.idx);
+  if (idx >= 0 && idx < slides.length) slides[idx].ativo = !slides[idx].ativo;
+  await db.run('INSERT INTO config (chave, valor) VALUES ($1, $2) ON CONFLICT (chave) DO UPDATE SET valor = $2', ['slides', JSON.stringify(slides)]);
+  if (req.app.locals) req.app.locals.slides = slides;
+  res.redirect('/admin/slides');
+});
 router.get('/config', auth, async (req, res) => {
   const defaults = { whatsapp: '5511999999999', hora_seg_sex_abre: '8h', hora_seg_sex_fecha: '19h', hora_sab_abre: '8h', hora_sab_fecha: '13h', cor_primaria: '#0f3460', cor_secundaria: '#1a1a2e', cor_destaque: '#e94560', cor_fundo: '#f8f9fb' };
   const config = {};
