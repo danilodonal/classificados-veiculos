@@ -12,21 +12,22 @@
     :root { --primaria: <%= cor_primaria %>; --secundaria: <%= cor_secundaria %>; --destaque: <%= cor_destaque %>; --fundo: <%= cor_fundo %>; }
     * { font-family: 'Inter', sans-serif; }
     body { background: var(--fundo); }
-    .top-bar { background: var(--primaria); color: #fff; font-size: 0.78rem; padding: 6px 0; }
+    .top-bar { background: var(--primaria); color: #fff; font-size: 0.78rem; padding: 6px 0; letter-spacing: 0.3px; }
     .top-bar a { color: #fff; }
-    .navbar-custom { background: var(--secundaria); padding: 12px 0; }
-    .navbar-nav .nav-link { color: rgba(255,255,255,0.75); font-size: 0.88rem; padding: 0.3rem 0.7rem !important; border-radius: 8px; }
+    .navbar-custom { background: var(--secundaria); padding: 12px 0; box-shadow: 0 2px 20px rgba(0,0,0,0.08); }
+    .navbar-nav .nav-link { color: rgba(255,255,255,0.75); font-size: 0.88rem; padding: 0.3rem 0.7rem !important; border-radius: 8px; font-weight: 500; transition: opacity .2s; }
     .navbar-nav .nav-link:hover, .navbar-nav .nav-link.active { color: #fff; background: rgba(255,255,255,0.1); }
-    .page-header { background: linear-gradient(135deg, var(--secundaria) 0%, #16213e 50%, var(--primaria) 100%); padding: 2.5rem 0; color: #fff; }
+    .page-header { background: linear-gradient(160deg, var(--secundaria) 0%, #1a2744 50%, var(--primaria) 100%); padding: 2.5rem 0; color: #fff; }
     .page-header h1 { font-size: 1.8rem; font-weight: 800; }
-    .content-box { background: #fff; border-radius: 16px; padding: 2rem; box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
+    .content-box { background: #fff; border-radius: 16px; padding: 2rem; box-shadow: 0 4px 24px rgba(0,0,0,0.06); }
     .content-box h4 { font-weight: 700; color: var(--secundaria); margin-top: 1.5rem; }
     .content-box h4:first-child { margin-top: 0; }
     .content-box p { font-size: 0.95rem; color: #555; line-height: 1.8; }
     .stat { text-align: center; padding: 1.5rem; background: var(--fundo); border-radius: 12px; }
     .stat .number { font-size: 2rem; font-weight: 800; color: var(--destaque); }
     .stat .label { font-size: 0.85rem; color: #666; }
-    footer { background: var(--secundaria); }
+    footer { background: var(--secundaria); padding: 3rem 0 2rem !important; }
+    footer small { opacity: .7; }
   </style>
 </head>
 <body>

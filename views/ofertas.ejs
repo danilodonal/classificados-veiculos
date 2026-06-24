@@ -12,28 +12,39 @@
     :root { --primaria: <%= cor_primaria %>; --secundaria: <%= cor_secundaria %>; --destaque: <%= cor_destaque %>; --fundo: <%= cor_fundo %>; }
     * { font-family: 'Inter', sans-serif; }
     body { background: var(--fundo); }
-    .top-bar { background: var(--primaria); color: #fff; font-size: 0.78rem; padding: 6px 0; }
+    .top-bar { background: var(--primaria); color: #fff; font-size: 0.78rem; padding: 6px 0; letter-spacing: 0.3px; }
     .top-bar a { color: #fff; }
-    .navbar-custom { background: var(--secundaria); padding: 12px 0; }
-    .navbar-nav .nav-link { color: rgba(255,255,255,0.75); font-size: 0.88rem; padding: 0.3rem 0.7rem !important; border-radius: 8px; }
+    .navbar-custom { background: var(--secundaria); padding: 12px 0; box-shadow: 0 2px 20px rgba(0,0,0,0.08); }
+    .navbar-nav .nav-link { color: rgba(255,255,255,0.75); font-size: 0.88rem; padding: 0.3rem 0.7rem !important; border-radius: 8px; font-weight: 500; transition: opacity .2s; }
     .navbar-nav .nav-link:hover, .navbar-nav .nav-link.active { color: #fff; background: rgba(255,255,255,0.1); }
-    .page-header { background: linear-gradient(135deg, var(--secundaria) 0%, #16213e 50%, var(--primaria) 100%); padding: 2.5rem 0; color: #fff; }
+    .page-header { background: linear-gradient(160deg, var(--secundaria) 0%, #1a2744 50%, var(--primaria) 100%); padding: 2.5rem 0; color: #fff; }
     .page-header h1 { font-size: 1.8rem; font-weight: 800; }
-    .card { border: none; border-radius: 14px; overflow: hidden; transition: transform .25s ease, box-shadow .25s ease; background: #fff; }
-    .card:hover { transform: translateY(-5px); box-shadow: 0 12px 35px rgba(0,0,0,0.1); }
-    .card-img-top { height: 220px; object-fit: cover; }
-    .card-title { font-size: 1.05rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 0.4rem; }
+    .card { border: none; border-radius: 16px; overflow: hidden; transition: transform .3s cubic-bezier(.22,1,.36,1), box-shadow .3s ease; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+    .card:hover { transform: translateY(-6px); box-shadow: 0 16px 40px rgba(0,0,0,0.1); }
+    .card-img-top { height: 220px; object-fit: cover; background: #e9ecef; }
+    .card-body { padding: 1.2rem; }
+    .card-title { font-size: 1.05rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 0.4rem; color: #1a1a2e; }
     .card-meta { font-size: 0.82rem; color: #6c757d; line-height: 1.6; }
-    .preco { font-size: 1.3rem; font-weight: 800; color: var(--primaria); margin: 0.4rem 0 0.5rem; }
-    .tag { font-size: 0.68rem; padding: 2px 8px; border-radius: 20px; background: #f0f2f5; color: #444; font-weight: 500; }
+    .card-meta i { margin-right: 3px; }
+    .preco { font-size: 1.3rem; font-weight: 800; color: var(--primaria); margin: 0.5rem 0 0.6rem; letter-spacing: -0.3px; }
+    .tag-group { display: flex; gap: 4px; flex-wrap: wrap; }
+    .tag { font-size: 0.68rem; padding: 3px 10px; border-radius: 20px; background: #f0f2f5; color: #444; font-weight: 500; }
     .tag-cambio { background: #e8f4fd; color: #0d6efd; }
+    .tag-cor { background: #f0fdf4; color: #16a34a; }
+    .tag-portas { background: #fef3c7; color: #b45309; }
+    .card-footer { background: transparent; border-top: 1px solid #f0f0f0; padding: 0.7rem 1.1rem; }
+    .card-footer .btn { border-radius: 12px; font-size: 0.82rem; font-weight: 600; padding: 8px 0; transition: filter .2s; background: var(--primaria); border: none; }
+    .card-footer .btn:hover { filter: brightness(1.1); }
     .section-title { font-size: 1.3rem; font-weight: 700; color: var(--secundaria); margin-bottom: 1.2rem; padding-bottom: 0.6rem; border-bottom: 3px solid var(--destaque); display: inline-block; }
-    .count-badge { background: var(--destaque); color: #fff; font-size: 0.75rem; padding: 1px 8px; border-radius: 20px; margin-left: 6px; }
-    .badge-oferta { position: absolute; top: 10px; left: 10px; background: var(--destaque); color: #fff; font-size: 0.7rem; font-weight: 700; padding: 3px 10px; border-radius: 20px; z-index: 2; box-shadow: 0 2px 8px rgba(233,69,96,0.4); }
-    footer { background: var(--secundaria); }
+    .count-badge { background: var(--destaque); color: #fff; font-size: 0.75rem; padding: 2px 10px; border-radius: 20px; margin-left: 6px; font-weight: 600; }
+    .badge-oferta { position: absolute; top: 10px; left: 10px; background: var(--destaque); color: #fff; font-size: 0.7rem; font-weight: 700; padding: 4px 12px; border-radius: 20px; z-index: 2; box-shadow: 0 2px 8px rgba(233,69,96,0.4); }
+    footer { background: var(--secundaria); padding: 3rem 0 2rem !important; }
+    footer small { opacity: .7; }
     @media (max-width: 576px) {
       .page-header h1 { font-size: 1.4rem; }
       .card-img-top { height: 150px; }
+      .card-title { font-size: 0.88rem; }
+      .preco { font-size: 1.05rem; }
     }
   </style>
 </head>
