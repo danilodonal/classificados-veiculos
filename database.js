@@ -49,9 +49,12 @@ async function initDB() {
       destaque BOOLEAN NOT NULL DEFAULT FALSE,
       vendido BOOLEAN NOT NULL DEFAULT FALSE,
       imagem TEXT,
+      video_url TEXT,
       created_at TIMESTAMP DEFAULT NOW(),
       updated_at TIMESTAMP DEFAULT NOW()
     );
+
+    ALTER TABLE veiculos ADD COLUMN IF NOT EXISTS video_url TEXT;
 
     CREATE TABLE IF NOT EXISTS vendedores (
       id SERIAL PRIMARY KEY,
