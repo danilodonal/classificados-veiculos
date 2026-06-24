@@ -97,7 +97,8 @@ async function initDB() {
     cor_primaria: '#0f3460',
     cor_secundaria: '#1a1a2e',
     cor_destaque: '#e94560',
-    cor_fundo: '#f8f9fb'
+    cor_fundo: '#f8f9fb',
+    nome_site: 'AutoClassificados'
   };
 
   for (const [chave, valor] of Object.entries(defaults)) {

@@ -295,7 +295,7 @@ router.get('/config', auth, async (req, res) => {
 });
 
 router.post('/config', auth, async (req, res) => {
-  const keys = ['whatsapp','hora_seg_sex_abre','hora_seg_sex_fecha','hora_sab_abre','hora_sab_fecha','cor_primaria','cor_secundaria','cor_destaque','cor_fundo'];
+  const keys = ['whatsapp','hora_seg_sex_abre','hora_seg_sex_fecha','hora_sab_abre','hora_sab_fecha','cor_primaria','cor_secundaria','cor_destaque','cor_fundo','nome_site'];
   for (const k of keys) {
     if (req.body[k] !== undefined) {
       await db.run('INSERT INTO config (chave, valor) VALUES ($1, $2) ON CONFLICT (chave) DO UPDATE SET valor = $2', [k, req.body[k]]);

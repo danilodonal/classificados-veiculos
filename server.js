@@ -25,7 +25,7 @@ const { initDB, parseImagens, primeiraImagem, getConfig } = require('./database'
 initDB().then(async () => {
   app.locals.parseImagens = parseImagens;
   app.locals.primeiraImagem = primeiraImagem;
-  const configDefaults = { whatsapp: '5511999999999', hora_seg_sex_abre: '8h', hora_seg_sex_fecha: '19h', hora_sab_abre: '8h', hora_sab_fecha: '13h', cor_primaria: '#0f3460', cor_secundaria: '#1a1a2e', cor_destaque: '#e94560', cor_fundo: '#f8f9fb' };
+  const configDefaults = { whatsapp: '5511999999999', hora_seg_sex_abre: '8h', hora_seg_sex_fecha: '19h', hora_sab_abre: '8h', hora_sab_fecha: '13h', cor_primaria: '#0f3460', cor_secundaria: '#1a1a2e', cor_destaque: '#e94560', cor_fundo: '#f8f9fb', nome_site: 'AutoClassificados' };
   await Promise.all(Object.entries(configDefaults).map(([k, v]) =>
     getConfig(k, v).then(val => { app.locals[k] = val; })
   ));
