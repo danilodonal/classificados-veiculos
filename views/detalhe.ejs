@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title><%= veiculo.marca %> <%= veiculo.modelo %> - AutoClassificados</title>
+  <link rel="icon" type="image/svg+xml" href="/images/favicon.svg">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -48,7 +49,7 @@
   <%- include('partials/topbar') %>
   <nav class="navbar navbar-expand-md navbar-dark navbar-custom">
     <div class="container">
-      <a class="navbar-brand fw-bold" href="/"><i class="bi bi-car-front-fill me-1"></i> AutoClassificados</a>
+      <a class="navbar-brand fw-bold" href="/"><img src="/images/car-logo.svg" alt="" style="height:28px;width:28px" class="me-1"> AutoClassificados</a>
       <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#menuNav">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -108,6 +109,14 @@
             <% } %>
           </div>
         </div>
+        <% if (veiculo.video_url) { %>
+          <div class="mt-4">
+            <h5 class="section-title"><i class="bi bi-play-circle-fill me-2" style="color:var(--destaque)"></i>Vídeo do Anúncio</h5>
+            <div class="ratio ratio-16x9 rounded-4 overflow-hidden" style="box-shadow:0 4px 20px rgba(0,0,0,0.08)">
+              <iframe src="<%= veiculo.video_url.replace('watch?v=', 'embed/').replace('youtu.be/', 'youtube.com/embed/').split('&')[0] %>" allowfullscreen loading="lazy"></iframe>
+            </div>
+          </div>
+        <% } %>
       </div>
       <div class="col-lg-5">
         <div class="info-card">

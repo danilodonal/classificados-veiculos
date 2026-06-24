@@ -6,7 +6,7 @@
       <div class="card-admin-body p-0">
         <img src="<%= primeiraImagem(veiculo) || 'https://placehold.co/600x400/e9ecef/999?text=Sem+Imagem' %>" class="w-100" style="height:200px;object-fit:cover;border-radius:14px 14px 0 0;" alt="">
         <div class="p-3">
-          <h5 class="fw-bold mb-1"><%= veiculo.marca %> <%= veiculo.modelo %></h5>
+          <h5 class="fw-bold mb-1"><%= veiculo.marca %> <%= veiculo.modelo %><% if (veiculo.video_url) { %> <span class="badge bg-dark rounded-pill" style="font-size:10px;vertical-align:middle"><i class="bi bi-play-circle-fill"></i> Vídeo</span><% } %></h5>
           <p class="text-muted small mb-2"><%= veiculo.ano_fabricacao %>/<%= veiculo.ano_modelo %> &bull; <%= veiculo.quilometragem.toLocaleString() %> km</p>
           <h4 class="text-danger fw-bold">R$ <%= veiculo.preco.toLocaleString('pt-BR', {minimumFractionDigits:2}) %></h4>
         </div>

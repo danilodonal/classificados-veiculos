@@ -100,7 +100,7 @@ router.get('/novo', auth, (req, res) => {
 });
 
 router.post('/novo', auth, upload.array('imagens', 10), async (req, res) => {
-  const { marca, modelo, ano_fabricacao, ano_modelo, quilometragem, combustivel, cambio, cor, portas, preco, descricao } = req.body;
+  const { marca, modelo, ano_fabricacao, ano_modelo, quilometragem, combustivel, cambio, cor, portas, preco, descricao, video_url } = req.body;
   if (!marca || !modelo || !ano_fabricacao || !ano_modelo || !preco) {
     return res.render('admin/form', { veiculo: null, erro: 'Preencha todos os campos obrigatórios.' });
   }
@@ -108,8 +108,8 @@ router.post('/novo', auth, upload.array('imagens', 10), async (req, res) => {
     ? JSON.stringify(req.files.map(f => 'data:' + f.mimetype + ';base64,' + f.buffer.toString('base64')))
     : null;
   await db.run(
-    'INSERT INTO veiculos (marca, modelo, ano_fabricacao, ano_modelo, quilometragem, combustivel, cambio, cor, portas, preco, descricao, imagem) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)',
-    [marca, modelo, parseInt(ano_fabricacao), parseInt(ano_modelo), parseInt(quilometragem || 0), combustivel, cambio, cor, parseInt(portas || 4), parseFloat(preco), descricao || '', imagens]
+    'INSERT INTO veiculos (marca, modelo, ano_fabricacao, ano_modelo, quilometragem, combustivel, cambio, cor, portas, preco, descricao, imagem, video_url) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)',
+    [marca, modelo, parseInt(ano_fabricacao), parseInt(ano_modelo), parseInt(quilometragem || 0), combustivel, cambio, cor, parseInt(portas || 4), parseFloat(preco), descricao || '', imagens, video_url || null]
   );
   res.redirect('/admin');
 });
@@ -123,7 +123,7 @@ router.get('/editar/:id', auth, async (req, res) => {
 router.post('/editar/:id', auth, upload.array('imagens', 10), async (req, res) => {
   const veiculo = await db.get('SELECT * FROM veiculos WHERE id = $1', [req.params.id]);
   if (!veiculo) return res.status(404).send('Veículo não encontrado');
-  const { marca, modelo, ano_fabricacao, ano_modelo, quilometragem, combustivel, cambio, cor, portas, preco, descricao, destaque, vendido, remover_imagens } = req.body;
+  const { marca, modelo, ano_fabricacao, ano_modelo, quilometragem, combustivel, cambio, cor, portas, preco, descricao, destaque, vendido, remover_imagens, video_url } = req.body;
   let imagens = db.parseImagens(veiculo);
   if (remover_imagens) {
     const remover = Array.isArray(remover_imagens) ? remover_imagens.map(Number) : [Number(remover_imagens)];
@@ -135,8 +135,8 @@ router.post('/editar/:id', auth, upload.array('imagens', 10), async (req, res) =
   }
   imagens = imagens.length > 0 ? JSON.stringify(imagens) : null;
   await db.run(
-    'UPDATE veiculos SET marca=$1, modelo=$2, ano_fabricacao=$3, ano_modelo=$4, quilometragem=$5, combustivel=$6, cambio=$7, cor=$8, portas=$9, preco=$10, descricao=$11, imagem=$12, destaque=$13, vendido=$14, updated_at=NOW() WHERE id=$15',
-    [marca, modelo, parseInt(ano_fabricacao), parseInt(ano_modelo), parseInt(quilometragem || 0), combustivel, cambio, cor, parseInt(portas || 4), parseFloat(preco), descricao || '', imagens, destaque ? true : false, vendido ? true : false, req.params.id]
+    'UPDATE veiculos SET marca=$1, modelo=$2, ano_fabricacao=$3, ano_modelo=$4, quilometragem=$5, combustivel=$6, cambio=$7, cor=$8, portas=$9, preco=$10, descricao=$11, imagem=$12, destaque=$13, vendido=$14, video_url=$15, updated_at=NOW() WHERE id=$16',
+    [marca, modelo, parseInt(ano_fabricacao), parseInt(ano_modelo), parseInt(quilometragem || 0), combustivel, cambio, cor, parseInt(portas || 4), parseFloat(preco), descricao || '', imagens, destaque ? true : false, vendido ? true : false, video_url || null, req.params.id]
   );
   res.redirect('/admin');
 });

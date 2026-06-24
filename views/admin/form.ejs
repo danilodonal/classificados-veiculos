@@ -42,6 +42,11 @@
         <input type="number" name="preco" class="form-control" step="0.01" min="0" value="<%= veiculo ? veiculo.preco : '' %>" required>
       </div>
       <div class="col-md-3">
+        <label class="form-label small fw-medium">Vídeo (URL do YouTube)</label>
+        <input type="url" name="video_url" class="form-control" value="<%= veiculo && veiculo.video_url ? veiculo.video_url : '' %>" placeholder="https://www.youtube.com/watch?v=...">
+        <small class="text-muted">Cole o link do YouTube. Aparecerá na página do anúncio.</small>
+      </div>
+      <div class="col-md-3">
         <label class="form-label small fw-medium">Combustível</label>
         <select name="combustivel" class="form-select">
           <% ['Gasolina', 'Etanol', 'Flex', 'Diesel', 'Elétrico', 'Híbrido'].forEach(c => { %>
